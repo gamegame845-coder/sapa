@@ -11,12 +11,12 @@ router = APIRouter()
 # ✅ admin key: 환경변수 우선, 없으면 기본값
 ADMIN_KEY = os.getenv("SAPA_ADMIN_KEY", "jsad1375!")
 
-# ✅ boards 전용 DB (watchlist sqlite랑 분리)
-DB_DIR = Path(os.getenv("SAPA_DB_DIR", ".")).resolve()
+# Render에서 쓰기 가능한 경로를 기본으로 사용
+# 1순위: SAPA_DB_DIR 환경변수
+# 2순위: 프로젝트 내부 ./data 폴더 (항상 쓰기 가능)
+DB_DIR = Path(os.getenv("SAPA_DB_DIR", str((Path(__file__).resolve().parent / "data"))))
 DB_DIR.mkdir(parents=True, exist_ok=True)
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{(DB_DIR / 'app.db').resolve()}"
 
-# sqlite3가 직접 쓰는 "파일 경로"
 DB_PATH = DB_DIR / "boards.db"
 
 def _connect():
